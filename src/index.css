@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --bg-primary: #0a0e27;
+  --bg-secondary: #111638;
+  --bg-tertiary: #1a1f4e;
+  --accent-primary: #00d4ff;
+  --accent-secondary: #0088ff;
+  --accent-glow: #00d4ff33;
+  --accent-warning: #ff6b35;
+  --accent-success: #00ff88;
+  --accent-danger: #ff3366;
+  --text-primary: #e8eaff;
+  --text-secondary: #8888bb;
+  --text-muted: #555577;
+  --border-subtle: #ffffff0d;
+  --border-glow: #00d4ff22;
+  --glass-bg: rgba(17, 22, 56, 0.85);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  background-image: radial-gradient(var(--border-subtle) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.hud-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glow);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.05);
+}
+
+.glow-text {
+  text-shadow: 0 0 10px var(--accent-primary);
+}
