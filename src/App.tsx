@@ -4,40 +4,99 @@
  */
 
 import { useState } from 'react';
-import { LayoutDashboard, Video, Library, Settings, Zap, Wand2, Play, Download, Trash2, Edit } from 'lucide-react';
+import { LayoutDashboard, Video, Library, Settings, Zap, Wand2, Play, Download, Trash2, Edit, Volume2 } from 'lucide-react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend);
 
-const CreateVideoPage = () => (
-  <div className="grid grid-cols-2 gap-6">
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <label className="text-sm text-text-secondary">Bước 1: Kịch bản</label>
-        <textarea className="w-full h-48 bg-bg-secondary border border-border-subtle rounded-lg p-3 text-sm font-mono" placeholder="Nhập kịch bản video của bạn..."></textarea>
-        <button className="flex items-center gap-2 text-accent-primary text-sm hover:text-accent-secondary">
-          <Wand2 size={16} /> AI Viết hộ
+const CreateVideoPage = () => {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState('');
+
+  const startGeneration = () => {
+    setIsGenerating(true);
+    setProgress(0);
+    const steps = ['Phân tích kịch bản...', 'Tạo hình ảnh...', 'Tạo giọng đọc...', 'Ghép video...', 'Hoàn thành!'];
+    let currentStep = 0;
+
+    const interval = setInterval(() => {
+      currentStep++;
+      setProgress((currentStep / steps.length) * 100);
+      setStatus(steps[currentStep - 1]);
+      if (currentStep >= steps.length) {
+        clearInterval(interval);
+        setTimeout(() => setIsGenerating(false), 1000);
+      }
+    }, 1500);
+  };
+
+  return (
+    <div className="grid grid-cols-2 gap-6">
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <label className="text-sm text-text-secondary">Bước 1: Kịch bản</label>
+          <textarea className="w-full h-48 bg-bg-secondary border border-border-subtle rounded-lg p-3 text-sm font-mono" placeholder="Nhập kịch bản video của bạn..."></textarea>
+          <button className="flex items-center gap-2 text-accent-primary text-sm hover:text-accent-secondary">
+            <Wand2 size={16} /> AI Viết hộ
+          </button>
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm text-text-secondary">Bước 2: Cài đặt</label>
+          <div className="flex gap-2">
+            <select 
+              className="flex-1 bg-bg-secondary border border-border-subtle rounded-lg p-2 text-sm"
+              onChange={(e) => console.log('Selected voice:', e.target.value)}
+            >
+              <option value="voice1">ElevenLabs: Rachel</option>
+              <option value="voice2">ElevenLabs: Adam</option>
+              <option value="voice3">ElevenLabs: Bella</option>
+            </select>
+            <button 
+              className="p-2 bg-bg-secondary border border-border-subtle rounded-lg hover:text-accent-primary"
+              onClick={() => {
+                const synth = window.speechSynthesis;
+                const utterance = new SpeechSynthesisUtterance('Đây là bản thử nghiệm giọng đọc AI.');
+                synth.speak(utterance);
+              }}
+            >
+              <Volume2 size={16} />
+            </button>
+          </div>
+          <select className="w-full bg-bg-secondary border border-border-subtle rounded-lg p-2 text-sm">
+            <option>Tỷ lệ: 9:16 (TikTok)</option>
+          </select>
+        </div>
+        <button 
+          onClick={startGeneration}
+          disabled={isGenerating}
+          className="w-full bg-gradient-to-r from-accent-primary to-accent-secondary text-bg-primary font-bold py-3 rounded-lg hover:shadow-[0_0_20px_var(--accent-glow)] transition-all disabled:opacity-50"
+        >
+          {isGenerating ? 'ĐANG XỬ LÝ...' : 'TẠO VIDEO'}
         </button>
       </div>
-      <div className="space-y-2">
-        <label className="text-sm text-text-secondary">Bước 2: Cài đặt</label>
-        <select className="w-full bg-bg-secondary border border-border-subtle rounded-lg p-2 text-sm">
-          <option>Tỷ lệ: 9:16 (TikTok)</option>
-        </select>
+
+      <div className="hud-panel rounded-lg p-4 flex flex-col items-center justify-center relative overflow-hidden">
+        {isGenerating && <div className="scan-line"></div>}
+        <div className="w-full aspect-[9/16] bg-bg-primary rounded-lg border border-border-subtle flex items-center justify-center text-text-muted relative">
+          {isGenerating ? (
+            <div className="text-center p-4">
+              <div className="typewriter text-accent-primary font-mono text-sm">{status}</div>
+              <div className="w-48 h-2 bg-bg-secondary rounded-full mt-4 overflow-hidden">
+                <div className="h-full bg-accent-primary transition-all duration-500" style={{ width: `${progress}%` }}></div>
+              </div>
+            </div>
+          ) : (
+            <Play size={48} />
+          )}
+        </div>
+        <div className="mt-4 w-full h-12 bg-bg-secondary rounded-lg border border-border-subtle"></div>
       </div>
-      <button className="w-full bg-gradient-to-r from-accent-primary to-accent-secondary text-bg-primary font-bold py-3 rounded-lg hover:shadow-[0_0_20px_var(--accent-glow)] transition-all">
-        TẠO VIDEO
-      </button>
     </div>
-    <div className="hud-panel rounded-lg p-4 flex flex-col items-center justify-center">
-      <div className="w-full aspect-[9/16] bg-bg-primary rounded-lg border border-border-subtle flex items-center justify-center text-text-muted">
-        <Play size={48} />
-      </div>
-      <div className="mt-4 w-full h-12 bg-bg-secondary rounded-lg border border-border-subtle"></div>
-    </div>
-  </div>
-);
+  );
+};
+// ... rest of the components remain same
 
 const LibraryPage = () => {
   const videos = [1, 2, 3, 4, 5, 6];
