@@ -4,10 +4,99 @@
  */
 
 import { useState } from 'react';
-import { LayoutDashboard, Video, Library, Settings, Zap, Wand2, Play } from 'lucide-react';
+import { LayoutDashboard, Video, Library, Settings, Zap, Wand2, Play, Download, Trash2, Edit } from 'lucide-react';
+import { Line, Bar, Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend);
+
+const CreateVideoPage = () => (
+  <div className="grid grid-cols-2 gap-6">
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <label className="text-sm text-text-secondary">Bước 1: Kịch bản</label>
+        <textarea className="w-full h-48 bg-bg-secondary border border-border-subtle rounded-lg p-3 text-sm font-mono" placeholder="Nhập kịch bản video của bạn..."></textarea>
+        <button className="flex items-center gap-2 text-accent-primary text-sm hover:text-accent-secondary">
+          <Wand2 size={16} /> AI Viết hộ
+        </button>
+      </div>
+      <div className="space-y-2">
+        <label className="text-sm text-text-secondary">Bước 2: Cài đặt</label>
+        <select className="w-full bg-bg-secondary border border-border-subtle rounded-lg p-2 text-sm">
+          <option>Tỷ lệ: 9:16 (TikTok)</option>
+        </select>
+      </div>
+      <button className="w-full bg-gradient-to-r from-accent-primary to-accent-secondary text-bg-primary font-bold py-3 rounded-lg hover:shadow-[0_0_20px_var(--accent-glow)] transition-all">
+        TẠO VIDEO
+      </button>
+    </div>
+    <div className="hud-panel rounded-lg p-4 flex flex-col items-center justify-center">
+      <div className="w-full aspect-[9/16] bg-bg-primary rounded-lg border border-border-subtle flex items-center justify-center text-text-muted">
+        <Play size={48} />
+      </div>
+      <div className="mt-4 w-full h-12 bg-bg-secondary rounded-lg border border-border-subtle"></div>
+    </div>
+  </div>
+);
+
+const LibraryPage = () => {
+  const videos = [1, 2, 3, 4, 5, 6];
+  return (
+    <div className="grid grid-cols-4 gap-4">
+      {videos.map(i => (
+        <div key={i} className="hud-panel rounded-lg p-3 space-y-2 group">
+          <div className="aspect-[9/16] bg-bg-primary rounded border border-border-subtle flex items-center justify-center text-text-muted">
+            <Play size={24} />
+          </div>
+          <div className="text-sm font-bold">Video Thời trang {i}</div>
+          <div className="text-xs text-text-muted">12/03/2026</div>
+          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button className="p-1 hover:text-accent-primary"><Download size={16} /></button>
+            <button className="p-1 hover:text-accent-primary"><Edit size={16} /></button>
+            <button className="p-1 hover:text-accent-danger"><Trash2 size={16} /></button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const DashboardPage = () => {
+  const data = {
+    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+    datasets: [{
+      label: 'Video tạo',
+      data: [12, 19, 3, 5, 2, 3, 7],
+      borderColor: '#00d4ff',
+      backgroundColor: 'rgba(0, 212, 255, 0.1)',
+    }]
+  };
+  return (
+    <div className="grid grid-cols-2 gap-6">
+      <div className="hud-panel p-4 rounded-lg">
+        <Line data={data} options={{ responsive: true, plugins: { legend: { labels: { color: '#e8eaff' } } } }} />
+      </div>
+      <div className="hud-panel p-4 rounded-lg">
+        <Bar data={data} options={{ responsive: true, plugins: { legend: { labels: { color: '#e8eaff' } } } }} />
+      </div>
+    </div>
+  );
+};
+
+const SettingsPage = () => <div className="text-text-secondary">Cài đặt hệ thống (Đang phát triển)</div>;
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('create');
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'create': return <CreateVideoPage />;
+      case 'library': return <LibraryPage />;
+      case 'dashboard': return <DashboardPage />;
+      case 'settings': return <SettingsPage />;
+      default: return <CreateVideoPage />;
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -52,38 +141,7 @@ export default function App() {
               {activeTab === 'dashboard' && 'Dashboard Thống kê'}
               {activeTab === 'settings' && 'Cài đặt Hệ thống'}
             </h2>
-            
-            {activeTab === 'create' && (
-              <div className="grid grid-cols-2 gap-6">
-                {/* Input Panel */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm text-text-secondary">Bước 1: Kịch bản</label>
-                    <textarea className="w-full h-48 bg-bg-secondary border border-border-subtle rounded-lg p-3 text-sm font-mono" placeholder="Nhập kịch bản video của bạn..."></textarea>
-                    <button className="flex items-center gap-2 text-accent-primary text-sm hover:text-accent-secondary">
-                      <Wand2 size={16} /> AI Viết hộ
-                    </button>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm text-text-secondary">Bước 2: Cài đặt</label>
-                    <select className="w-full bg-bg-secondary border border-border-subtle rounded-lg p-2 text-sm">
-                      <option>Tỷ lệ: 9:16 (TikTok)</option>
-                    </select>
-                  </div>
-                  <button className="w-full bg-gradient-to-r from-accent-primary to-accent-secondary text-bg-primary font-bold py-3 rounded-lg hover:shadow-[0_0_20px_var(--accent-glow)] transition-all">
-                    TẠO VIDEO
-                  </button>
-                </div>
-
-                {/* Preview Panel */}
-                <div className="hud-panel rounded-lg p-4 flex flex-col items-center justify-center">
-                  <div className="w-full aspect-[9/16] bg-bg-primary rounded-lg border border-border-subtle flex items-center justify-center text-text-muted">
-                    <Play size={48} />
-                  </div>
-                  <div className="mt-4 w-full h-12 bg-bg-secondary rounded-lg border border-border-subtle"></div>
-                </div>
-              </div>
-            )}
+            {renderContent()}
           </div>
         </main>
       </div>

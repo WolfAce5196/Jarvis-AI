@@ -1,5 +1,9 @@
 {
-  "name": "STARK VIDEO AI",
+  "name": "Jarvis AI Pro",
   "description": "A professional AI-powered video production tool for TikTok Shop, featuring Jarvis-inspired HUD design.",
-  "requestFramePermissions": ["camera", "microphone", "geolocation"]
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
 }
